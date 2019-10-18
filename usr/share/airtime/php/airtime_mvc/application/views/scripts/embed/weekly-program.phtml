@@ -53,11 +53,14 @@
                 var format_start_date = start_date.getFullYear() + "-" + (start_date.getMonth()+1) + "-" + start_date.getDate();
 
                 if ($window.schedule_data["weekDays"][format_start_date] !== undefined) {
+                if(value.image_path.length >0) imag=value.image_path; else imag='/defaut.png';
+                if(value.url.length >0) urlaffiche='block'; else urlaffiche='none'; 
+                  
                     $window.schedule_data["weekDays"][format_start_date]["shows"].push(
                         {
                             "show_start_hour": start_date.toLocaleTimeString([], { hour: 'numeric', minute : 'numeric' }),
                             "show_end_hour": end_date.toLocaleTimeString([], { hour: 'numeric', minute : 'numeric' }),
-                            "name": value.name
+                            "name": value.name, "description" : value.description, "url" : value.url, "affurl": urlaffiche, "image_path" : imag
                         });
                 }
             });
@@ -75,7 +78,7 @@
 </head>
 
 <body ng-app="scheduleWidget" ng-controller="scheduleController">
-<div class="schedule tab_content current">
+<div class="schedule tab_content current" style="min-width:300px">
     <ul class="tabs">
         <li ng-repeat="x in weekDays track by $index">
             {{x.dayOfWeek}}<span>{{x.dayOfMonth}}</span>
@@ -85,10 +88,15 @@
     <div class="schedule_content">
         <div ng-repeat="x in weekDays track by $index" ng-attr-id="{{'day-' + x.dayOfMonth}}" class="schedule_item">
             <div ng-if="isEmpty(x.shows)" class="row empty-schedule"><?php echo _('Looks like there are no shows scheduled on this day.') ?></div>
-            <div ng-repeat="show in x.shows" class="row">
-                <div class="time_grid">{{show.show_start_hour}} - {{show.show_end_hour}}</div>
-                <div class="name_grid">{{show.name}}</div>
+            <div ng-repeat="show in x.shows" class="row" style="clear: both">
+                <div class="time_grid" align=center >{{show.show_start_hour}}<br>&dArr;<br>{{show.show_end_hour}}</div>
+                <div class="name_grid" >{{show.name}}</div>
+                <div class="image_grid" ><img src="{{show.image_path}}"style="width:100%; max-height:100px" ></div>                
+                <div class="name_grid" style="font-size:10px">{{show.description}}</div>
+                <div style="width: 100%; clear: both; font-size: small;" align=right ><a style="display:{{show.affurl}}; color:cyan" href="{{show.url}}" target=_blank >Plus d'informations</a></div>
+                <div style="width: 100%; clear: both; height: 2px; background-color: darkgray; margin-top: 10px;"></div>
             </div>
+                  
         </div>
     </div>
 
